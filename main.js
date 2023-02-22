@@ -1,8 +1,3 @@
-let currentPlayer = document.querySelector('div.current-player')
-let board = document.querySelector('.board')
-let cells = document.querySelectorAll('div.zones')
-currentPlayer.classList.add('player1')
-
 // Botão que reinicia o jogo
 const restart = document.getElementById("btn-restart");
 restart.addEventListener("click", function () {
@@ -23,41 +18,11 @@ btnMenu.onblur = function () {
     }, 130)
 }
 
-var cel
-cells.forEach(function (e) {
-    // funcionamento do hover das divs
-    e.addEventListener("mouseover", function () {
-        if (currentPlayer.classList.contains('player2')) {
-            this.style.backgroundColor = "#8bd3dd"
-        } else {
-            this.style.backgroundColor = "#f582ae"
-        }
-    })
-    e.addEventListener("mouseout", function () {
-        this.style.backgroundColor = ""
-    })
-
-    // funcionamento do click nas divs
-    e.addEventListener("click", function () {
-        let player = currentPlayer.classList.contains('player1') ? 'player1' : 'player2'
-
-        cel = this
-
-        if (!this.classList.contains("player1") && !this.classList.contains("player2")) {
-            let captures = getCaptures(this)
-            console.log(captures)
-            if (captures.length >= 0) {
-                this.classList.add(player)
-                for (let i = 0; i < captures.length; i++) {
-                    captures[i].classList.remove("player1")
-                    captures[i].classList.remove("player2")
-                    captures[i].classList.add(player)
-                }
-                switchPlayer()
-            }
-        }
-    })
-})
+// Lógica do jogo
+let currentPlayer = document.querySelector('div.current-player')
+let board = document.querySelector('.board')
+let cells = document.querySelectorAll('td')
+currentPlayer.classList.add('player1')
 
 function switchPlayer() {
     if (currentPlayer.classList.contains('player1')) {
@@ -69,18 +34,54 @@ function switchPlayer() {
     }
 }
 
+cells.forEach(function (e) {
+    // funcionamento do hover das divs
+    let divZone = e.querySelector('div')   
+    divZone.addEventListener("mouseover", function () {
+        if (!this.classList.contains("player1") && !this.classList.contains("player2")){
+            if (currentPlayer.classList.contains('player2')) {
+                this.style.backgroundColor = "#8bd3dd"
+            } else {
+                this.style.backgroundColor = "#f582ae"
+            }
+        }
+    })
+    divZone.addEventListener("mouseout", function () {
+        this.style.backgroundColor = ""
+    })
+
+    // funcionamento do click nas divs
+    divZone.addEventListener("click", function () {
+        let player = currentPlayer.classList.contains('player1') ? 'player1' : 'player2'
+        if (!this.classList.contains("player1") && !this.classList.contains("player2")) {
+            let captures = getCaptures(e)
+            if (captures.length > 0) {
+                this.classList.add(player)
+                for (let i = 0; i < captures.length; i++) {
+                    let divCaptures = captures[i].querySelector('div')
+                    divCaptures.classList.remove("player1")
+                    divCaptures.classList.remove("player2")
+                    divCaptures.classList.add(player)
+                }
+                score()
+                switchPlayer()
+                if(!hasValidMove()){
+                    gameOver()
+                }
+            }
+        }
+    })
+})
+
 function getCaptures(cell) {
     let captures = [];
     let player = currentPlayer.classList.contains("player1") ? "player1" : "player2";
     let opponent = currentPlayer.classList.contains("player1") ? "player2" : "player1";
 
-    let cellRect = cell.getBoundingClientRect();
-    let boardRect = board.getBoundingClientRect();
+    let x = cell.parentNode.rowIndex;
+    let y = cell.cellIndex;
 
-    let x = Array.from(board.children).indexOf(cell.parentNode);
-    let y = Array.from(cell.parentNode.children).indexOf(cell);
-
-    // Check captures in all 8 directions
+    // checando todas as direções
     for (let dx = -1; dx <= 1; dx++) {
         for (let dy = -1; dy <= 1; dy++) {
             if (dx === 0 && dy === 0) {
@@ -91,16 +92,11 @@ function getCaptures(cell) {
             let nextY = y + dy;
 
             while (nextX >= 0 && nextX < 8 && nextY >= 0 && nextY < 8) {
-                let nextCell = document.elementFromPoint(
-                    boardRect.left + (cellRect.width * nextY + cellRect.width / 2),
-                    boardRect.top + (cellRect.height * nextX + cellRect.height / 2)
-                );
-
-                if (!nextCell || nextCell === board) break;
-                if (nextCell.parentNode !== board.children[nextX]) break;
-                if (nextCell.classList.contains(opponent)) {
+                let nextCell = board.rows[nextX].cells[nextY];
+                let divNextCell = nextCell.querySelector('div')
+                if (divNextCell.classList.contains(opponent)) {
                     sequence.push(nextCell);
-                } else if (nextCell.classList.contains(player) && sequence.length > 0) {
+                } else if (divNextCell.classList.contains(player) && sequence.length > 0) {
                     captures = captures.concat(sequence);
                     break;
                 } else {
@@ -114,4 +110,39 @@ function getCaptures(cell) {
     return captures;
 }
 
+function hasValidMove() {
+    for (let i = 0; i < cells.length; i++) {
+        let divCell = cells[i].querySelector('div')
+        if (!divCell.classList.contains("player1") && !divCell.classList.contains("player2")) {
+            if (getCaptures(cells[i]).length > 0) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
 
+function score(){
+    let player1 = document.querySelectorAll('td > div.player1')
+    let player2 = document.querySelectorAll('td > div.player2')
+    let score1 = document.getElementById('score1')
+    let score2 = document.getElementById('score2')
+    score1.innerHTML = player1.length
+    score2.innerHTML = player2.length
+}
+
+function gameOver(){
+    let player1 = document.querySelectorAll('td > div.player1')
+    let player2 = document.querySelectorAll('td > div.player2')
+    let score1 = document.getElementById('score1')
+    let score2 = document.getElementById('score2')
+    score1.innerHTML = player1.length
+    score2.innerHTML = player2.length
+    if (player1.length > player2.length) {
+        alert('Player 1 wins!')
+    } else if (player1.length < player2.length) {
+        alert('Player 2 wins!')
+    } else {
+        alert('Draw!')
+    }
+}

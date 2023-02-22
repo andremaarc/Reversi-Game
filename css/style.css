@@ -41,27 +41,41 @@ header nav {
 
 #board {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  justify-content: space-around;
   width: 100%;
-  height: 100%;
 }
 #board .board {
   box-shadow: inset 0px -9px 0px 0px rgb(0, 0, 0);
-  background-color: #f3d2c1;
   border: 2px solid black;
   border-radius: 20px;
-  padding: 10px;
+  background-color: #f3d2c1;
+  padding: 15px;
   width: 540px;
-  display: grid;
-  justify-items: center;
-  grid-template-columns: repeat(8, 1fr);
-  grid-template-rows: repeat(9, 1fr);
-  grid-column-gap: 5px;
-  grid-row-gap: 5px;
+}
+#board .board td {
+  text-align: center;
+}
+#board .player {
+  border: 2px solid black;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 180px;
+  width: 15%;
+}
+#board .player .score {
+  height: 75%;
+  font-size: 50px;
+  position: relative;
+  top: 25%;
 }
 
 .zones {
+  display: inline-block;
+  vertical-align: middle;
   background-color: #fef6e4;
   border: 1.5px solid #000;
   border-radius: 100%;
@@ -80,9 +94,9 @@ footer {
   bottom: 10px;
 }
 footer .current-player {
-  display: flex;
-  border: 2px solid #000;
+  border: 2px solid black;
   border-radius: 20px;
+  display: flex;
   justify-content: center;
   align-items: center;
   padding: 10px 5px;
