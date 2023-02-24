@@ -7,6 +7,7 @@ restart.addEventListener("click", function () {
 // Botão que abre o menu
 const btnMenu = document.getElementById('btn-menu')
 let menuView = document.getElementById('menu')
+let gameOverView = document.getElementById('game-over')
 
 btnMenu.onclick = function () {
     menuView.style.display = "flex";
@@ -132,6 +133,8 @@ function score(){
 }
 
 function gameOver(){
+    let winner = document.getElementById('winner')
+
     let player1 = document.querySelectorAll('td > div.player1')
     let player2 = document.querySelectorAll('td > div.player2')
     let score1 = document.getElementById('score1')
@@ -139,10 +142,17 @@ function gameOver(){
     score1.innerHTML = player1.length
     score2.innerHTML = player2.length
     if (player1.length > player2.length) {
-        alert('Player 1 wins!')
+        gameOverView.style.display = "flex";
+        winner.innerHTML = 'Player 1'
+
     } else if (player1.length < player2.length) {
-        alert('Player 2 wins!')
+        gameOverView.style.display = "flex";
+        winner.innerHTML = 'Player 2'
     } else {
-        alert('Draw!')
+        gameOverView.style.display = "flex";
+        winner.innerHTML = 'Draw'
     }
+    setTimeout(() => {
+        gameOverView.style.display = "none";
+    }, 3000)
 }

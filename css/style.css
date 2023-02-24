@@ -145,6 +145,34 @@ footer .current-player {
   background-color: #c26689;
 }
 
+#game-over {
+  display: none;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  position: absolute;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+#game-over .game-over {
+  z-index: 99999;
+  background-color: #f3d2c1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  height: 20%;
+  width: 30%;
+  padding: 20px;
+  border-radius: 10px;
+  border: 2px solid #000;
+  box-shadow: inset 0px -6px 0px 0px rgb(0, 0, 0);
+}
+#game-over .game-over h2 {
+  font-size: 32px;
+}
+
 .icon {
   width: 50px;
   height: 50px;
